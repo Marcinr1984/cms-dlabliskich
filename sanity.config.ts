@@ -1,18 +1,23 @@
-import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure'
-import {visionTool} from '@sanity/vision'
-import {schemaTypes} from './schemaTypes'
+import { defineConfig } from 'sanity';
+import { deskTool } from 'sanity/desk';
+import { schemaTypes } from './schemas';
+import GenerateQrCodeAction from './components/qrGeneratorAction';
 
 export default defineConfig({
   name: 'default',
   title: 'cms-dlabliskich',
-
   projectId: '6qwm6uei',
   dataset: 'dlabliskich',
-
-  plugins: [structureTool(), visionTool()],
-
+  plugins: [deskTool()],
   schema: {
     types: schemaTypes,
   },
-})
+  document: {
+    actions: (prev, context) => {
+      if (context.schemaType === 'qr_code') {
+        return [...prev, GenerateQrCodeAction];
+      }
+      return prev;
+    },
+  },
+});
