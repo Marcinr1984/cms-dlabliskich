@@ -38,11 +38,12 @@ export default defineType({
                 dangerouslySetInnerHTML={{ __html: props.value }}
                 style={{
                   width: '200px',
-                  height: 'auto',
+                  height: '300px',
                   background: '#fff',
                   padding: '1rem',
                   display: 'inline-block',
                   borderRadius: '8px',
+                  marginBottom: '2rem',
                 }}
               />
               {/* Przycisk pobierania */}
@@ -50,14 +51,15 @@ export default defineType({
                 type="button"
                 onClick={downloadSvg}
                 style={{
-                  marginTop: '1rem',
-                  marginBottom: '1rem',
+                  marginTop: '0rem',
+                  marginBottom: '2rem',
                   padding: '0.5rem 1rem',
                   backgroundColor: '#444',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '4px',
                   cursor: 'pointer',
+                  display: 'block',
                 }}
               >
                 Pobierz kod QR
