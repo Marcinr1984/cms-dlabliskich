@@ -1,7 +1,7 @@
 import { defineConfig } from 'sanity';
 import { deskTool } from 'sanity/desk';
 import { schemaTypes } from './schemas';
-import GenerateQrCodeAction from './components/qrGeneratorAction';
+import GenerateQrCodeAction from './components/qrGeneratorAction'; // <- OK, jeśli masz domyślny eksport
 
 export default defineConfig({
   name: 'default',

@@ -1,19 +1,23 @@
 import { DocumentActionComponent } from 'sanity';
 import { useDocumentOperation } from 'sanity';
-import { Button } from '@sanity/ui';
 import { useState } from 'react';
 
-const GenerateQrCodeAction: DocumentActionComponent = (props) => {
+const GenerateDynamicQrCodeAction: DocumentActionComponent = (props) => {
   const { patch, publish } = useDocumentOperation(props.id, 'qr_code');
   const [isLoading, setIsLoading] = useState(false);
-  const slug = props?.document?.slug?.current;
+  const activePageId = props?.document?.activePage;
 
   const handleClick = async () => {
+    if (!activePageId) {
+      alert('Brak aktywnej strony pamięci!');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const QRCode = (await import('qrcode')).default;
-      const url = `https://qr.dlabliskich.pl/memorial/${slug}`;
-      const qrSvg = await QRCode.toString(url, { type: 'svg' });
+      const url = `https://qr.dlabliskich.pl/memorial/${activePageId}`;
+      const qrSvg = await QRCode.toString(url, { type: 'svg', margin: 0 });
 
       const response = await fetch('/static/logo.svg');
       let logoSvg = await response.text();
@@ -46,10 +50,10 @@ const GenerateQrCodeAction: DocumentActionComponent = (props) => {
   };
 
   return {
-    label: isLoading ? 'Generuję...' : 'Generuj kod QR',
+    label: isLoading ? 'Generuję...' : 'Generuj dynamiczny kod QR',
     onHandle: handleClick,
     disabled: isLoading,
   };
 };
 
-export default GenerateQrCodeAction;
+export default GenerateDynamicQrCodeAction;

@@ -13,6 +13,12 @@ export default defineType({
       options: { source: 'slug', maxLength: 96 },
     }),
     defineField({
+      name: 'activePage',
+      title: 'Aktywna strona pamięci (ID)',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'svg',
       title: 'Kod QR (SVG)',
       type: 'text',
@@ -33,7 +39,6 @@ export default defineType({
 
           return (
             <div>
-              {/* Podgląd SVG */}
               <div
                 dangerouslySetInnerHTML={{ __html: props.value }}
                 style={{
@@ -46,12 +51,11 @@ export default defineType({
                   marginBottom: '2rem',
                 }}
               />
-              {/* Przycisk pobierania */}
               <button
                 type="button"
                 onClick={downloadSvg}
                 style={{
-                  marginTop: '0rem',
+                  marginTop: '1rem',
                   marginBottom: '2rem',
                   padding: '0.5rem 1rem',
                   backgroundColor: '#444',
@@ -64,7 +68,6 @@ export default defineType({
               >
                 Pobierz kod QR
               </button>
-              {/* Pole tekstowe z kodem SVG */}
               <textarea
                 value={props.value}
                 readOnly
