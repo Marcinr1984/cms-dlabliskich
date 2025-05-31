@@ -1,3 +1,4 @@
-import qr_code from './qr_code'
+import publicQrSlug from './public_qr_slug'
+import qrCode from './qr_code'
 
-export const schemaTypes = [qr_code]
+export const schemaTypes = [publicQrSlug, qrCode]
