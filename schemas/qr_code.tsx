@@ -32,7 +32,8 @@ export default defineType({
             const url = URL.createObjectURL(blob)
             const a = document.createElement('a')
             a.href = url
-            a.download = `${props?.document?.slug?.current || 'qr-code'}.svg`
+            const doc = props.document as { slug?: { current?: string }, [key: string]: any }
+            a.download = `${doc.slug?.current || 'qr-code'}.svg`
             a.click()
             URL.revokeObjectURL(url)
           }

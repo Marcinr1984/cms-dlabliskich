@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import fetch from 'node-fetch'
+// import fetch from 'node-fetch' // Node 18+ ma wbudowany fetch
 import { createClient } from '@sanity/client'
 
 // 1. Dane z .env lub na sztywno (lepiej z .env)
@@ -18,7 +18,7 @@ const sanity = createClient({
 })
 
 // 3. Funkcja pobierająca dane z Supabase (widok publiczny)
-async function fetchQrSlugsFromSupabase(): Promise<{ qr_slug: string; url: string }[]> {
+async function fetchQrSlugsFromSupabase(): Promise<{ qr_slug: string }[]> {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/public_qr_slugs`, {
     headers: {
       apikey: SUPABASE_API_KEY,
@@ -27,14 +27,15 @@ async function fetchQrSlugsFromSupabase(): Promise<{ qr_slug: string; url: strin
   })
 
   if (!res.ok) throw new Error('Nie udało się pobrać danych z Supabase')
-  return res.json() as Promise<{ qr_slug: string; url: string }[]>
+  return res.json() as Promise<{ qr_slug: string }[]>
 }
 
 // 4. Główna funkcja synchronizująca dane do Sanity
 async function syncSlugs() {
-  const qrSlugs: { qr_slug: string; url: string }[] = await fetchQrSlugsFromSupabase()
+  const qrSlugs: { qr_slug: string }[] = await fetchQrSlugsFromSupabase()
 
-  for (const { qr_slug, url } of qrSlugs) {
+  for (const { qr_slug } of qrSlugs) {
+    const url = `https://qr.dlabliskich.pl/qr/${qr_slug}`
     console.log(`✅ Nadpisuję slug: ${qr_slug}`)
     await sanity.createOrReplace({
       _id: `qrslug-${qr_slug}`,
@@ -47,4 +48,5 @@ async function syncSlugs() {
   }
 }
 
-syncSlugs().catch(console.error)
+
+export { syncSlugs }

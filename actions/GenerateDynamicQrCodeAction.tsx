@@ -5,19 +5,22 @@ import { useState } from 'react';
 const GenerateDynamicQrCodeAction: DocumentActionComponent = (props) => {
   const { patch, publish } = useDocumentOperation(props.id, 'qr_code');
   const [isLoading, setIsLoading] = useState(false);
-  const activePageId = props?.document?.activePage;
+  const slug = props?.document?.slug?.current;
 
   const handleClick = async () => {
-    if (!activePageId) {
-      alert('Brak aktywnej strony pamięci!');
+    if (!slug) {
+      alert('Brakuje sluga. Nie można wygenerować kodu QR.');
       return;
     }
+    console.log('Slug:', slug);
+    const url = `https://qr.dlabliskich.pl/qr/${slug}`;
+    console.log('Generated URL:', url);
 
     setIsLoading(true);
     try {
       const QRCode = (await import('qrcode')).default;
-      const url = `https://qr.dlabliskich.pl/memorial/${activePageId}`;
       const qrSvg = await QRCode.toString(url, { type: 'svg', margin: 0 });
+      console.log('QR SVG snippet:', qrSvg.slice(0, 200));
 
       const response = await fetch('/static/logo.svg');
       let logoSvg = await response.text();
@@ -38,12 +41,14 @@ const GenerateDynamicQrCodeAction: DocumentActionComponent = (props) => {
           </g>
         </svg>
       `;
+      console.log('Final SVG:', finalSvg.slice(0, 300));
 
       patch.execute([{ set: { svg: finalSvg.trim() } }]);
       publish.execute();
       props.onComplete();
     } catch (err) {
       console.error('QR generation failed', err);
+      console.log('QR code generation error details:', err);
     } finally {
       setIsLoading(false);
     }
